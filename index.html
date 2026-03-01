@@ -5,8 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coder Kuttappan</title>
     <meta name="description" content="Small, free tools that do one thing well. By coder kuttappan.">
+    <meta name="theme-color" content="#fff">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='70' font-family='Verdana'>CK</text></svg>">
+    <script>
+        (function() {
+            var t = localStorage.getItem('ck-theme');
+            var dark = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (dark) {
+                document.documentElement.classList.add('dark');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1C1C1E');
+            }
+        })();
+    </script>
     <style>
+        :root {
+            --bg: #fff;
+            --text: #333;
+            --text-body: #444;
+            --text-muted: #666;
+            --text-faded: #999;
+            --link: #3273dc;
+            --border: #ddd;
+        }
+        html.dark {
+            --bg: #1C1C1E;
+            --text: #F5F5F4;
+            --text-body: #D1D5DB;
+            --text-muted: #9CA3AF;
+            --text-faded: #6B7280;
+            --link: #6DB8BA;
+            --border: #3A3A3C;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Verdana, Geneva, sans-serif;
@@ -14,15 +44,31 @@
             margin: 0 auto;
             padding: 40px 20px;
             line-height: 1.6;
-            color: #333;
-            background: #fff;
+            color: var(--text);
+            background: var(--bg);
+            transition: background 0.2s ease, color 0.2s ease;
         }
         h1 {
             font-size: 2em;
             margin-bottom: 4px;
         }
+        .header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+        #theme-toggle {
+            background: none; border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 36px; height: 36px; border-radius: 8px;
+            cursor: pointer; font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; margin-top: 6px;
+            transition: border-color 0.2s ease;
+        }
+        #theme-toggle:hover { border-color: var(--text-muted); }
         .tagline {
-            color: #666;
+            color: var(--text-muted);
             margin-bottom: 8px;
         }
         .intro {
@@ -30,7 +76,7 @@
         }
         hr {
             border: none;
-            border-top: 1px solid #ddd;
+            border-top: 1px solid var(--border);
             margin: 32px 0;
         }
         h2 {
@@ -38,7 +84,7 @@
             margin-bottom: 4px;
         }
         h2 a {
-            color: #333;
+            color: var(--text);
             text-decoration: none;
         }
         h2 a:hover {
@@ -49,36 +95,39 @@
             margin-bottom: 8px;
         }
         .app-link a {
-            color: #3273dc;
+            color: var(--link);
         }
         .app {
             margin-bottom: 32px;
         }
         .app p {
-            color: #444;
+            color: var(--text-body);
         }
         .section-title {
             font-size: 0.85em;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: #999;
+            color: var(--text-faded);
             margin-bottom: 16px;
         }
         .coming-soon p {
-            color: #666;
+            color: var(--text-muted);
         }
         footer {
-            color: #999;
+            color: var(--text-faded);
             font-size: 0.85em;
         }
         footer a {
-            color: #999;
+            color: var(--text-faded);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Coder Kuttappan</h1>
+        <div class="header-row">
+            <h1>Coder Kuttappan</h1>
+            <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode"></button>
+        </div>
         <p class="tagline"><em>The programmer you deserved, but not the one you paid for.</em></p>
         <p class="intro">I build small, free tools that do one thing well. No accounts, no tracking, no monetization strategy (even if I tried).</p>
     </header>
@@ -123,6 +172,27 @@
         <p>X: <a href="https://x.com/CoderKuttappan">@CoderKuttappan</a> (where no one loves me)</p>
     </footer>
 
+    <script>
+        function updateToggleIcon() {
+            var btn = document.getElementById('theme-toggle');
+            btn.textContent = document.documentElement.classList.contains('dark') ? '\u2600' : '\u263E';
+        }
+        function toggleTheme() {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('ck-theme', isDark ? 'dark' : 'light');
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', isDark ? '#1C1C1E' : '#fff');
+            updateToggleIcon();
+        }
+        updateToggleIcon();
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            if (!localStorage.getItem('ck-theme')) {
+                if (e.matches) document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', e.matches ? '#1C1C1E' : '#fff');
+                updateToggleIcon();
+            }
+        });
+    </script>
     <script data-goatcounter="https://coderkuttappan.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
